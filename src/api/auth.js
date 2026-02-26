@@ -135,6 +135,27 @@ export const change_password = (token,data) => {
   return result;
 };
 
+/**
+ * Save FCM device token for push notifications
+ * @param {string} token - Bearer auth token
+ * @param {string} deviceToken - FCM device token
+ */
+export const saveUserDeviceToken = (token, deviceToken) => {
+  const formData = new FormData();
+  formData.append('device_token', deviceToken);
+  const result = fetch(BaseUrl + 'saveUserDeviceToken', {
+    method: 'POST',
+    headers: {
+      'Authorization': token,
+    },
+    body: formData,
+  })
+    .then(response => response.json())
+    .then(result => result)
+    .catch(error => error);
+  return result;
+};
+
 export const delete_account = (token,data) => {  
   const result = fetch(BaseUrl + 'deleteAccount', {
       method: 'POST',

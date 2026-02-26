@@ -5,7 +5,6 @@ import { signIn } from '../../api/auth';
 import AsyncStorage from '@react-native-community/async-storage';
 import { AppContext } from '../../context/AppProvider';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-
 const SignIn = (props) => {
     const { navigate } = props?.navigation;
     const [showpass, setShowPass] = useState(true);

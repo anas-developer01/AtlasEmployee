@@ -4,7 +4,8 @@ import { Black, Blue, ButtonClr, Feather, H, Ionicons, LogoHome, W, White, Suppo
 import { AppContext } from "../../context/AppProvider";
 import { dashboard, tickets } from "../../api/ticket";
 import AsyncStorage from "@react-native-community/async-storage";
-import { delete_account } from "../../api/auth";
+import { delete_account, saveUserDeviceToken } from "../../api/auth";
+import { getFCMToken, clearFCMToken } from "../../utils/pushNotification";
 
 const Home = (props) => {
     const { navigate } = props?.navigation;
@@ -13,6 +14,15 @@ const Home = (props) => {
  
     useEffect(() => {
         getData();
+        const fetchFCMToken = async () => {
+            const fcmToken = await getFCMToken();
+            if (fcmToken && user?.token) {
+                const res = await saveUserDeviceToken(user.token, fcmToken);
+                if (res?.status === 1) console.log('Device token saved');
+                else console.warn('Save device token:', res?.message || res);
+            }
+        };
+        fetchFCMToken();
         const willFocusSubscription = props?.navigation.addListener('focus', () => {
             getData();
         });
@@ -233,10 +243,11 @@ const Home = (props) => {
                 </View>
                 <View>
                 <TouchableOpacity
-                onPress={() => {
-                    AsyncStorage.removeItem('UserData',() => {
-                        navigate('Onboard');                    
-                    })
+                onPress={async () => {
+                    await clearFCMToken();
+                    AsyncStorage.removeItem('UserData', () => {
+                        navigate('Onboard');
+                    });
                 }}
                 style={{
                     height:H(14),
